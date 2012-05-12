@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>Superbook.js | Tests</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="css/mocha.css" />
+        <script src="../support/chai/mocha.js"></script>
+        <script>mocha.setup('tdd')</script>
+        <script src="../support/chai/chai.js"></script>
+        <script src="../superbook.js"></script>
+        <script src="js/test.superbook.js"></script>
+        <script>onload = function() {
+            mocha.run();
+        }
+        </script>
+    </head>
+    <body>
+        <div id="mocha"></div>
+    </body>
+</html>
