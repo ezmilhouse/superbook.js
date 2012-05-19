@@ -193,7 +193,7 @@ var superbook = function(exports) {
 			var that = this
 				, FB = _sdks[this._name].sdk.FB;
 
-			flow()
+			superflow
 				.seq(function(cb) {
 
 					// skip!
@@ -243,7 +243,7 @@ var superbook = function(exports) {
 					});
 
 				})
-				.exec(function(err, res) {
+				.end(function(err, res) {
 
 					switch (that._user.authResponse) {
 						case null :
@@ -514,7 +514,7 @@ var superbook = function(exports) {
 
 			} else {
 
-				flow()
+				superflow
 					.seq(function(cb) {
 
 						// skip!
@@ -554,7 +554,7 @@ var superbook = function(exports) {
 						}));
 
 					})
-					.exec(function(err, res) {
+					.end(function(err, res) {
 						if (callback) callback(err, that.FB);
 					});
 
@@ -591,7 +591,7 @@ var superbook = function(exports) {
 
 			} else {
 
-				flow()
+				superflow
 					.seq(function(cb) {
 
 						that.load(function(err) {
@@ -606,7 +606,7 @@ var superbook = function(exports) {
 						cb();
 
 					})
-					.exec(function(err, res) {
+					.end(function(err, res) {
 						callback(null, that.FB);
 					});
 
