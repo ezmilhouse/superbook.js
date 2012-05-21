@@ -451,7 +451,7 @@ var superbook = function(exports) {
 			status               : true,
 			xfbml                : false,
 			oauth                : true,
-			channelUrl           : 'fb/channel.html',
+			channelUrl           : '/fb/channel.html',
 			authResponse         : 'authResponse',
 			frictionlessRequests : false,
 			hideFlashCallback    : null
