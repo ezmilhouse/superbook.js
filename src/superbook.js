@@ -191,7 +191,9 @@ var superbook = function(exports) {
 		this._connect = function() {
 
 			var that = this
-				, FB = _sdks[this._name].sdk.FB;
+				, FB = _sdks[this._name].sdk.FB || null;
+
+			// ---
 
 			superflow
 				.seq(function(cb) {
@@ -200,36 +202,75 @@ var superbook = function(exports) {
 					if (FB) return cb();
 
 					_sdks[that._name].sdk.init(function(err, Facebook) {
+
 						FB = Facebook;
+
 						cb();
+
 					});
 
 				})
 				.seq(function(cb) {
 
-					// skip!
-					if (!_.isEmpty(that._user)) return cb();
+					var auth = FB.getAuthResponse();
 
-					FB.getLoginStatus(function(res) {
+					// skip!
+					if (!auth) return cb();
+
+					_.extend(that._user, {
+						authResponse : auth.authResponse,
+						status       : auth.status
+					});
+
+					cb();
+
+				})
+				.seq(function(cb) {
+
+					// skip!
+					if (that._user.authResponse) return cb();
+
+					FB.getLoginStatus(function(auth) {
+
+						/**
+						 * ATTENTION, plz ...!
+						 * If this callback does not fire, two things might
+						 * have happened:
+						 *
+						 * 1. the domain name that you run your application
+						 * on, does not appear in the list of domains in your
+						 * application settings.
+						 *
+						 * 2. the application runs in sandbox mode and the
+						 * user you're currently logged in with in Facebook
+						 * is not added as a developer (via the application
+						 * settings).
+						 */
+
 						_.extend(that._user, {
-							authResponse : res.authResponse,
-							status       : res.status
+							authResponse : auth.authResponse,
+							status       : auth.status
 						});
-						cb()
-					});
+
+						cb();
+
+					}, true);
 
 				})
 				.seq(function(cb) {
 
 					// skip!
-					if (that._user.authResponse !== null) return cb();
+					if (that._user.status === 'connected') return cb();
 
 					FB.login(function(res) {
+
 						_.extend(that._user, {
 							authResponse : res.authResponse,
 							status       : res.status
 						});
+
 						cb();
+
 					}, {
 						scope : that._permissions.join(',')
 					});
@@ -452,9 +493,7 @@ var superbook = function(exports) {
 			xfbml                : false,
 			oauth                : true,
 			channelUrl           : '/fb/channel.html',
-			authResponse         : 'authResponse',
-			frictionlessRequests : false,
-			hideFlashCallback    : null
+			frictionlessRequests : false
 
 		};
 
